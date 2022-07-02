@@ -4,35 +4,44 @@ import Categories from "../components/Categories";
 import Sort from "../components/Sort";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import Pizza from "../components/PizzaBlock";
+import Pagination from '../components/Pagination'
+import {useDispatch, useSelector} from "react-redux";
+import {setCategoryId, setSort} from "../redux/slices/filterSlice";
 
 
-const Home = () => {
+const Home = ({search}) => {
+    const categoryId = useSelector(state => state.filterSlice.categoryId)
+    const sortType = useSelector(state => state.filterSlice.sort)
+    const dispatch = useDispatch()
+
+    const searchFetch = search ?  `&search=${search}`: ''
     const [items, setItems] = useState([])
     const [isLoading, setIsLoading] = useState(true)
-    const [categoryId, setCategoryId] = useState(0)
-    const [sortType, setSortType] = useState({
-        name: "популярности",
-        sortProperty: "rating",
-    })
+    const [currentPage, setCurrentPage] = useState(1)
+    // const [sortType, setSortType] = useState({
+    //     name: "популярности",
+    //     sortProperty: "rating",
+    // })
+
     useEffect(() => {
         setIsLoading(true)
         const order = sortType.sortProperty.includes("-") ? "asc" : "desc"
         const sortBy  = sortType.sortProperty.replace("-", "");
-        const category =  categoryId > 0 ? `category=${categoryId}` : '';
-
-        fetch(`https://62ac9e6d9fa81d00a7b62716.mockapi.io/items?${category}&sortBy=${sortBy}&order=${order}`)
+        const category =  categoryId > 0 ? `&category=${categoryId}` : '';
+        fetch(`https://62b8898203c36cb9b7c8a8a6.mockapi.io/items?page=${currentPage}&limit=4${category}&sortBy=${sortBy}&order=${order}${searchFetch}`)
             .then(data => data.json())
             .then(data => {
                 setItems(data)
                 setIsLoading(false)
             })
         window.scrollTo(0, 0)
-    }, [categoryId, sortType])
+    }, [categoryId, sortType, search, currentPage])
+
     return (
         <div className="container" >
             <div className="content__top">
-                <Categories value={categoryId} onClickCategory={(id) => setCategoryId(id)} />
-                <Sort value={sortType} onClickSortType={(id) => setSortType(id)} />
+                <Categories value={categoryId} onClickCategory={(sortObj) => dispatch(setCategoryId(sortObj))} />
+                <Sort value={sortType} onClickSortType={(id) => dispatch(setSort(id))} />
             </div>
             <h2 className="content__title">Все пиццы</h2>
             <div className="content__items">
@@ -42,6 +51,7 @@ const Home = () => {
                         : items.map(item => <Pizza key={item.id}  {...item} />)
                 }
             </div>
+            <Pagination onChangePage={number => setCurrentPage(number)} />
         </div>
     );
 };

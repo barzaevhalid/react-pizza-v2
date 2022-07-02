@@ -11,8 +11,8 @@ const Sort = ({value, onClickSortType}) => {
         {name: "алфавиту (DESC)", sortProperty: "name"},
         {name: "алфавиту (ASC)", sortProperty: "-name"}
     ];
-    const onSelectedFilter = (i) => {
-        onClickSortType(i)
+    const onSelectedFilter = (obj) => {
+        onClickSortType(obj)
         setIsVisible(false)
     }
     return (

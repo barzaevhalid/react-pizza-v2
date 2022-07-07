@@ -3,7 +3,7 @@ import Button from "./Button";
 import {Link} from "react-router-dom";
 import Search from "./Search";
 
-const Header = ({search, setSearch}) => {
+const Header = ({setSearch}) => {
     return (
         <div className="header">
             <div className="container">
@@ -16,7 +16,7 @@ const Header = ({search, setSearch}) => {
                         </div>
                     </div>
                 </Link>
-                <Search search={search} setSearch={setSearch} />
+                <Search setSearch={setSearch} />
                 <Button />
             </div>
         </div>

@@ -52,6 +52,7 @@ const Home = ({search}) => {
                 }
             </div>
             <Pagination onChangePage={onChangePage} />
+
         </div>
     );
 };
